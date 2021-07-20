@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+
+{% for guitar in guitars %}
+<div class="card">
+    <a href="{% url 'detail' guitar.id %}">
+        <div class="card-content">
+            <span class="card-title">{{ guitar.brand }} {{guitar.gtrmodel}}</span>
+            <p>Year: {{ guitar.year }}</p>
+            <p>Color: {{ guitar.color }}</p>
+        </div>
+    </a>
+</div>
+
+{% endfor %}
+{% endblock %}

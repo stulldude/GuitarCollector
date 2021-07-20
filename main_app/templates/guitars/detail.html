@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>{{ guitar.gtrmodel }} Details</h1>
+<div class="row">
+  <div class="col s6">
+    <div class="card">
+      <div class="card-content">
+        <span class="card-title">{{ cat.name }}</span>
+        <p>Brand: {{ guitar.brand }}</p>
+        <p>Year: {{ guitar.year }}</p>
+        <p>Color: {{ guitar.color }} </p>
+      </div>
+      <div class="card-action">
+        <a href="{% url "guitar_update" guitar.id %}">Edit</a>
+        <a href="{% url "guitar_delete" guitar.id %}">Delete</a>
+      </div>
+    </div>
+  </div>
+  <div class="col s6">
+    <form action="{% url 'add_mod' guitar.id %}" method="post">
+      {% csrf_token %}
+      {{ modification_form.as_p }}
+      <input type="submit" class="btn" value="Add Modification">
+    </form>
+    <table class="striped">
+        <tr><th>Mod</th><th>Brand</th><th>Model</th></tr>
+      </thead>
+      <tbody>
+        {% for modification in guitar.modification_set.all %}
+          <tr>
+            <td>{{modification.mod}}</td>
+            <td>{{modification.brand}}</td>
+            <td>{{modification.mod_model}}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+<hr>
+  <div class="col s6">
+    <h3>Favorite Amps With This Guitar</h3>
+    {% if guitar.amps.count %}
+      {% for amp in guitar.amps.all %}
+        <div class="card">
+          <div class="card-content">
+            <span class="card-title">
+              A {{amp.brand}} {{amp.amp_model}}. ({{amp.style}})
+            </span>
+          </div>
+          <div class="card-action">
+            <form action="{% url 'unassoc_amp' guitar.id amp.id %}" method="POST">
+              {% csrf_token %}
+              <button type="submit" class="btn">Remove</button>
+            </form>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <h5>No Favorite Amps Yet</h5>
+    {% endif %}
+  </div>
+</div>
+<div class="col s6">
+    <h3>Available Amps To Try</h3>
+    {% if amps.count %}
+      {% for amp in amps.all %}
+        <div class="card">
+          <div class="card-content">
+            <span class="card-title">
+              A {{amp.brand}} {{amp.amp_model}}. ({{amp.style}})
+            </span>
+          </div>
+          <div class="card-action">
+            <form action="{% url 'assoc_amp' guitar.id amp.id %}" method="post">
+              {% csrf_token %}
+              <button type="submit" class="btn">Favorite</button>
+            </form>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <h5>You like all amps with this bad ass {{guitar.gtrmodel}}</h5>
+    {% endif %}
+</div>
+{% endblock %}
